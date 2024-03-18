@@ -5,16 +5,17 @@ library(ggplot2)
 library(gridExtra)
 library(cowplot)
 
-#varying sample size
+#varying sample
 
-hist_sam_size <- function(n, rpdf, dens)
+
+hist_sam_size1 <- function(n, rpdf, dens, alpha)      #if the simulating distribution has single argument
 {
   set.seed(seed = 1)
-  s <- rpdf(n)
+  s <- rpdf(n, alpha)
   x <- seq(0, max(s), 0.001)
   df <- data.frame(s)
   
-  density <- dens(x)
+  density <- dens(x, alpha)
   df1 <- data.frame(x, density)
   fig <- ggplot() + geom_histogram(data = df, aes(x = s, y = after_stat(density)))  + 
     geom_line(data = df1, aes(x = x, y = density)) +
@@ -22,7 +23,44 @@ hist_sam_size <- function(n, rpdf, dens)
   return (fig)
 }
 
-hist_sam_size(100, rexp, dexp)
+hist_sam_size2 <- function(n, rpdf, dens, alpha, beta)      #if the simulating distribution has two arguments
+{
+  set.seed(seed = 1)
+  s <- rpdf(n, alpha, beta)
+  x <- seq(0, max(s), 0.001)
+  df <- data.frame(s)
+  
+  density <- dens(x, alpha, beta)
+  df1 <- data.frame(x, density)
+  fig <- ggplot() + geom_histogram(data = df, aes(x = s, y = after_stat(density)))  + 
+    geom_line(data = df1, aes(x = x, y = density)) +
+    labs(title = paste("n = ", n))
+  return (fig)
+}
+hist_sam_size(100, rbeta, dbeta, 5, 2)
 
-plot_grid(hist_sam_size(100, rexp, dexp), hist_sam_size(200, rexp, dexp), hist_sam_size(500, rexp, dexp), 
-          hist_sam_size(1000, rexp, dexp), ncol = 2, nrow = 2)
+
+hist_comp_size1 <- function(n, rpdf, dens, alpha)
+{
+  plots <- list()
+  for(i in (1:length(n)))
+  {
+    plots[[i]] <- hist_sam_size1(n[i], rpdf, dens, alpha)
+  }
+
+  
+  grid.arrange(grobs = plots, ncol = round(length(n)/2))
+}
+
+
+hist_comp_size2 <- function(n, rpdf, dens, alpha, beta)
+{
+  plots <- list()
+  for(i in (1:length(n)))
+  {
+    plots[[i]] <- hist_sam_size2(n[i], rpdf, dens, alpha, beta)
+  }
+  
+  
+  grid.arrange(grobs = plots, ncol = round(length(n)/2))
+}
