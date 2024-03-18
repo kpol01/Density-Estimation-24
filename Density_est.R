@@ -5,7 +5,7 @@ library(ggplot2)
 library(gridExtra)
 library(cowplot)
 
-#varying origin
+#varying sample size
 
 hist_sam_size <- function(n, rpdf, dens)
 {
