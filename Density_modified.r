@@ -5,29 +5,26 @@ library(gridExtra)
 library(cowplot)
 
 
-
 hist1 <- function(n, x0, h, rpdf, dens, alpha)      #if the simulating distribution has single argument
 {
   set.seed(seed = 1)
-  xn <- rpdf(n, alpha)
-  s<- seq(min(xn)-h,max(xn)+h,0.001)
+  x <- rpdf(n, alpha)
+  s<- seq(min(x)-h,max(x)+h,0.001)
   ds <- dens(s,alpha)
-  fig <- ggplot() + geom_histogram(data = data.frame(xn), aes(x = xn, y = after_stat(density)),center=x0-h/2, binwidth=h, color="black", fill="white")  + 
-    geom_line(data = data.frame(s, ds), aes(x = s, y = ds)) 
-    #labs(title = paste("n = ", n, ", x0 = ", x0, ", h = ", h))
+  fig <- ggplot() + geom_histogram(data = data.frame(x), aes(x = x, y = after_stat(density)),center=x0-h/2, binwidth=h, color="black", fill="white")  + 
+    geom_line(data = data.frame(s, ds), aes(x = s, y = ds))
   return (fig)
 }
 
 hist2 <- function(n, x0, h, rpdf, dens, alpha, beta)      #if the simulating distribution has two arguments
 {
   set.seed(seed = 1)
-  xn <- rpdf(n, alpha, beta)
-  s <- seq(min(xn)-h,max(xn)+h,0.001)
+  x <- rpdf(n, alpha, beta)
+  s <- seq(min(x)-h,max(x)+h,0.001)
   ds <- dens(s,alpha,beta)
   
-  fig <- ggplot() + geom_histogram(data = data.frame(xn), aes(x = xn, y = after_stat(density)),center=x0-h/2, binwidth=h, color="black", fill="white")  + 
+  fig <- ggplot() + geom_histogram(data = data.frame(x), aes(x = x, y = after_stat(density)),center=x0-h/2, binwidth=h, color="black", fill="white")  + 
     geom_line(data = data.frame(s, ds), aes(x = s, y = ds))
-    #labs(title = paste("n = ", n, ", x0 = ", x0, ", h = ", h))
   return (fig)
 }
 
@@ -79,6 +76,7 @@ hist_comp_origin2 <- function(n, origin, h, rpdf, dens, alpha, beta)
 
 
 #For varying width (binwidth are equal)
+
 hist_comp_width1 <- function(n, x0, width, rpdf, dens, alpha)
 {
   plots <- list()
@@ -100,11 +98,36 @@ hist_comp_width2 <- function(n, x0, width, rpdf, dens, alpha, beta)
 }
 
 #parameters are given in order (sample size, origin, binwidth,rpdf, dens, parameters)
-hist_comp_size1(c(100,500,1000,2000), 0, 0.5, rexp, dexp, 1)
-hist_comp_origin1(500, c(0,0.3,0.6,0.8), 0.5, rexp, dexp, 1)
-hist_comp_width1(500, 0, c(0.3,0.5,0.7,1), rexp, dexp, 1)
+
+#Varying sample size
+
+exp_size <- hist_comp_size1(c(100,500,1000,2000), 0, 0.5, rexp, dexp, 1)
+title <- ggdraw() + draw_label("exp(1) with x0=0, h=0.5",fontface = 'bold')
+plot_grid(title, exp_size,ncol = 1,rel_heights = c(0.1, 1))
+
+norm_size <- hist_comp_size2(c(100,500,1000,2000), 0, 1, rnorm, dnorm, 0, 1)
+title <- ggdraw() + draw_label("N(0,1) with x0=0, h=1",fontface = 'bold')
+plot_grid(title, norm_size,ncol = 1,rel_heights = c(0.1, 1))
 
 
-hist_comp_size2(c(100,500,1000,2000), 0, 1, rnorm, dnorm, 0, 1)
-hist_comp_origin2(500, c(0,0.3,-0.2,0.7), 0.5, rnorm, dnorm, 0, 1)
-hist_comp_width2(500, 0, c(0.3,0.5,0.7,1), rnorm, dnorm, 0, 1)
+#Varying origin
+
+exp_origin <- hist_comp_origin1(500, c(0,0.3,0.6,0.8), 0.5, rexp, dexp, 1)
+title <- ggdraw() + draw_label("exp(1) with n=500, h=0.5",fontface = 'bold')
+plot_grid(title, exp_origin,ncol = 1,rel_heights = c(0.1, 1))
+
+norm_origin <- hist_comp_origin2(500, c(0,0.3,-0.2,0.7), 1, rnorm, dnorm, 0, 1)
+title <- ggdraw() + draw_label("N(0,1) with n=500, h=1",fontface = 'bold')
+plot_grid(title, norm_origin,ncol = 1,rel_heights = c(0.1, 1))
+
+
+#Varying binwidth
+
+exp_width <- hist_comp_width1(500, 0, c(0.3,0.5,0.7,1), rexp, dexp, 1)
+title <- ggdraw() + draw_label("exp(1) with n=500,x0=0",fontface = 'bold')
+plot_grid(title, exp_width,ncol = 1,rel_heights = c(0.1, 1))
+
+norm_width <- hist_comp_width2(500, 0, c(0.3,0.5,0.7,1), rnorm, dnorm, 0, 1)
+title <- ggdraw() + draw_label("N(0,1) with n=500, x0=0",fontface = 'bold')
+plot_grid(title, norm_width,ncol = 1,rel_heights = c(0.1, 1))
+
