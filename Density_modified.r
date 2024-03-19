@@ -6,7 +6,7 @@ library(cowplot)
 
 
 
-hist1 <- function(n=100, x0= 0, h=5, rpdf, dens, alpha)      #if the simulating distribution has single argument
+hist1 <- function(n, x0, h, rpdf, dens, alpha)      #if the simulating distribution has single argument
 {
   set.seed(seed = 1)
   xn <- rpdf(n, alpha)
@@ -18,7 +18,7 @@ hist1 <- function(n=100, x0= 0, h=5, rpdf, dens, alpha)      #if the simulating 
   return (fig)
 }
 
-hist2 <- function(n=100, x0= 0, h=5, rpdf, dens, alpha, beta)      #if the simulating distribution has two arguments
+hist2 <- function(n, x0, h, rpdf, dens, alpha, beta)      #if the simulating distribution has two arguments
 {
   set.seed(seed = 1)
   xn <- rpdf(n, alpha, beta)
