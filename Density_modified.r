@@ -109,6 +109,11 @@ norm_size <- hist_comp_size2(c(100,500,1000,2000), 0, 1, rnorm, dnorm, 0, 1)
 title <- ggdraw() + draw_label("N(0,1) with x0=0, h=1",fontface = 'bold')
 plot_grid(title, norm_size,ncol = 1,rel_heights = c(0.1, 1))
 
+beta_size <- hist_comp_size2(c(100,500,1000,2000), 0, 0.1, rbeta, dbeta, 5, 2)
+title <- ggdraw() + draw_label("Beta(5,2) with x0=0, h=0.1",fontface = 'bold')
+plot_grid(title, beta_size,ncol = 1,rel_heights = c(0.1, 1))
+
+
 
 #Varying origin
 
@@ -120,6 +125,9 @@ norm_origin <- hist_comp_origin2(500, c(0,0.3,-0.2,0.7), 1, rnorm, dnorm, 0, 1)
 title <- ggdraw() + draw_label("N(0,1) with n=500, h=1",fontface = 'bold')
 plot_grid(title, norm_origin,ncol = 1,rel_heights = c(0.1, 1))
 
+beta_origin <- hist_comp_origin2(500, c(0,0.355,0.62,0.832), 0.1, rbeta, dbeta, 5, 2)
+title <- ggdraw() + draw_label("Beta(5,2) with n=500, h=0.1",fontface = 'bold')
+plot_grid(title, beta_origin,ncol = 1,rel_heights = c(0.1, 1))
 
 #Varying binwidth
 
@@ -130,4 +138,8 @@ plot_grid(title, exp_width,ncol = 1,rel_heights = c(0.1, 1))
 norm_width <- hist_comp_width2(500, 0, c(0.3,0.5,0.7,1), rnorm, dnorm, 0, 1)
 title <- ggdraw() + draw_label("N(0,1) with n=500, x0=0",fontface = 'bold')
 plot_grid(title, norm_width,ncol = 1,rel_heights = c(0.1, 1))
+
+beta_width <- hist_comp_width2(500, 0, c(0.2,0.01,0.05,0.1), rbeta, dbeta, 5, 2)
+title <- ggdraw() + draw_label("Beta(5,2) with n=500, x0=0",fontface = 'bold')
+plot_grid(title, beta_width,ncol = 1,rel_heights = c(0.1, 1))
 
