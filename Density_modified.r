@@ -12,7 +12,7 @@ hist1 <- function(n, x0, h, rpdf, dens, alpha)      #if the simulating distribut
   s<- seq(min(x)-h,max(x)+h,0.001)
   ds <- dens(s,alpha)
   fig <- ggplot() + geom_histogram(data = data.frame(x), aes(x = x, y = after_stat(density)),center=x0-h/2, binwidth=h, color="black", fill="white")  + 
-    geom_line(data = data.frame(s, ds), aes(x = s, y = ds))
+    geom_line(data = data.frame(s, ds), aes(x = s, y = ds), color="red")
   return (fig)
 }
 
@@ -24,7 +24,7 @@ hist2 <- function(n, x0, h, rpdf, dens, alpha, beta)      #if the simulating dis
   ds <- dens(s,alpha,beta)
   
   fig <- ggplot() + geom_histogram(data = data.frame(x), aes(x = x, y = after_stat(density)),center=x0-h/2, binwidth=h, color="black", fill="white")  + 
-    geom_line(data = data.frame(s, ds), aes(x = s, y = ds))
+    geom_line(data = data.frame(s, ds), aes(x = s, y = ds), color="red")
   return (fig)
 }
 
@@ -113,6 +113,19 @@ beta_size <- hist_comp_size2(c(100,500,1000,2000), 0, 0.1, rbeta, dbeta, 5, 2)
 title <- ggdraw() + draw_label("Beta(5,2) with x0=0, h=0.1",fontface = 'bold')
 plot_grid(title, beta_size,ncol = 1,rel_heights = c(0.1, 1))
 
+negbin_size <- hist_comp_size2(c(500,1000,2000,5000),10.5,5, rnbinom, dnbinom,10,0.3)
+title <- ggdraw() + draw_label("Negative Binomial(10,0.3) with x_0 = 10.5, h = 5",fontface = 'bold')
+plot_grid(title, negbin_size,ncol = 1,rel_heights = c(0.1, 1))
+
+bin_size <- hist_comp_size2(c(500,1000,2000,5000),5.5,1, rbinom, dbinom,10,0.3)
+title <- ggdraw() + draw_label("Binomial(10,0.3) with x_0 = 5.5, h = 1",fontface = 'bold')
+plot_grid(title, bin_size,ncol = 1,rel_heights = c(0.1, 1))
+
+geo_size <- hist_comp_size1(c(500,1000,2000,5000), 5.5 ,1, rgeom, dgeom,0.3)
+title <- ggdraw() + draw_label("Geometric(0.3) with x_0 = 5.5, h = 1",fontface = 'bold')
+plot_grid(title, geo_size,ncol = 1,rel_heights = c(0.1, 1))
+
+
 
 
 #Varying origin
@@ -129,6 +142,19 @@ beta_origin <- hist_comp_origin2(500, c(0,0.355,0.62,0.832), 0.1, rbeta, dbeta, 
 title <- ggdraw() + draw_label("Beta(5,2) with n=500, h=0.1",fontface = 'bold')
 plot_grid(title, beta_origin,ncol = 1,rel_heights = c(0.1, 1))
 
+negbin_origin <- hist_comp_origin2(1000,c(10,11,12,14),5, rnbinom, dnbinom,10,0.3)
+title <- ggdraw() + draw_label("Negative Binomial(10,0.3) with n = 1000, h = 5",fontface = 'bold')
+plot_grid(title, negbin_origin,ncol = 1,rel_heights = c(0.1, 1))
+
+bin_origin <- hist_comp_origin2(1000,c(5,5.5,5.2,5.3),1, rbinom, dbinom,10,0.3)
+title <- ggdraw() + draw_label("Binomial(10,0.3) with n = 1000, h = 1",fontface = 'bold')
+plot_grid(title, bin_origin,ncol = 1,rel_heights = c(0.1, 1))
+
+geo_origin <- hist_comp_origin1(1000,c(5,5.5,5.2,5.3),1, rgeom, dgeom,0.3)
+title <- ggdraw() + draw_label("Geometric(0.3) with n = 1000, h = 1",fontface = 'bold')
+plot_grid(title, geo_origin,ncol = 1,rel_heights = c(0.1, 1))
+
+
 #Varying binwidth
 
 exp_width <- hist_comp_width1(500, 0, c(0.3,0.5,0.7,1), rexp, dexp, 1)
@@ -143,3 +169,14 @@ beta_width <- hist_comp_width2(500, 0, c(0.2,0.01,0.05,0.1), rbeta, dbeta, 5, 2)
 title <- ggdraw() + draw_label("Beta(5,2) with n=500, x0=0",fontface = 'bold')
 plot_grid(title, beta_width,ncol = 1,rel_heights = c(0.1, 1))
 
+negbin_width <- hist_comp_width2(1000,10.5,c(0.5,1,2,3), rnbinom, dnbinom,10,0.3)
+title <- ggdraw() + draw_label("Negative Binomial(10,0.3) with n = 1000, x_0 = 10.5",fontface = 'bold')
+plot_grid(title, negbin_width,ncol = 1,rel_heights = c(0.1, 1))
+
+bin_width <- hist_comp_width2(1000,5.5,c(0.5,1,2,3), rbinom, dbinom,10,0.3)
+title <- ggdraw() + draw_label("Binomial(10,0.3) with n = 1000, x_0 = 5.5",fontface = 'bold')
+plot_grid(title, bin_width,ncol = 1,rel_heights = c(0.1, 1))
+
+geo_width <- hist_comp_width1(1000,5.5,c(0.5,1,2,3), rgeom, dgeom,0.3)
+title <- ggdraw() + draw_label("Geometric(0.3) with n = 1000, x_0 = 5.5",fontface = 'bold')
+plot_grid(title, geo_width,ncol = 1,rel_heights = c(0.1, 1))
