@@ -100,6 +100,11 @@ plot_grid(title, norm_width,ncol = 1,rel_heights = c(0.1, 1))
 
 
 #Beta
+v<- c(0.05,0.15,0.35,0.5,0.75,1.05,1.4,1.8)
+breaks <- list(v,v*1.3,v*1.2,v*0.75)
+beta_width <- hist_comp_width5(500, breaks, rbeta, dbeta, 5, 2)
+title <- ggdraw() + draw_label("Beta(5,2) with n=500, x0=0",fontface = 'bold')
+plot_grid(title, beta_width,ncol = 1,rel_heights = c(0.1, 1))
 
 
 #mixture normal
