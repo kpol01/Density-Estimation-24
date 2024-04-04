@@ -117,7 +117,7 @@ plot_grid(title, norm_origin,ncol = 1,rel_heights = c(0.1, 1))
 
 ##### Comments:
 
-\` From the above figure,
+From the above figure,
 
 1.  $X_1, X_2, \cdots, X_n$ are chosen from $N(0,1)$. Assuming their density to be unknown we are trying to estimate the density using *Histogram.* Consider sample size of the Histogram $n$ as 50 and bin width of all the bin $h$ as $0.1$
 2.  Histograms show that as $x_0$ shifts **Normal** shifts accordingly.
@@ -254,7 +254,7 @@ title <- ggdraw() + draw_label("N(0,1) with n = 500, x_0 = 0",fontface = 'bold')
 plot_grid(title, norm_width,ncol = 1,rel_heights = c(0.1, 1))
 ```
 
----------------------------------------------------------------------------------------------
+------------------------------------------------------------------------
 
 ##### Comments:
 
@@ -372,9 +372,7 @@ hist_comp_size2 <- function(samp, x0, h, rpdf, dens, alpha, beta)
 }
 ```
 
-
 ### Effect of Sample size (n) on Histogram
-
 
 #### For symmetric Distribution
 
@@ -384,7 +382,7 @@ title <- ggdraw() + draw_label("N(0,1) with x_0 = 0, h = 0.5",fontface = 'bold')
 plot_grid(title, norm_size,ncol = 1,rel_heights = c(0.1, 1))
 ```
 
--------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------
 
 ##### Comments:
 
@@ -393,7 +391,7 @@ From the above figure,
 1.  $X_1, X_2, \cdots, X_n$ are chosen from $N(0,1)$. Assuming their density to be unknown we are trying to estimate the density using *Histogram.* Considering origin $x_0$ of the Histogram as 0 and bin width of all the bin $h$ as $0.5$
 2.  Histograms show that as $n$ increases the amount of smoothing of **Normal** density increases.
 
---------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------
 
 #### For Positively skewed Distribution
 
@@ -404,7 +402,7 @@ title <- ggdraw() + draw_label("exp(1) with x_0 = 0, h = 0.2",fontface = 'bold')
 plot_grid(title, exp_size,ncol = 1,rel_heights = c(0.1, 1))
 ```
 
---------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------
 
 ##### Comments:
 
@@ -490,8 +488,7 @@ From the above figure,
 
 -   Histogram can be generalized by allowing bandwidths to vary. So here we consider the varying bandwidth. This varying bindwidth could be decided aprior or be data depended. We can estimate density by: $$\hat{f_2(x)} = \frac{1}{n} \frac{\text{No. of X's in the same bin as x}}{\text{width of the bin}}$$
 
-Lets see how it goes via simulation
-
+-   Lets see how it goes via simulation
 
 # Effects on Histograms
 
@@ -562,6 +559,8 @@ hist_comp_width6 <- function(n, width, m1,s1,m2,s2,p)
   grid.arrange(grobs = plots, ncol = round(length(width)/2))
 }
 ```
+
+------------------------------------------------------------------------
 
 ### Effects of varying width on Histogram
 
@@ -664,17 +663,13 @@ plot_grid(title, geo_width,ncol = 1,rel_heights = c(0.1, 1))
 
 1.  
 
-------------------------------------------------------------------------
-
 # Asymptotic Normality Checking
 
 ## Background Theory
 
-Kernel type Estimator: Consider the class of estimators of hte form, $$f_n(x) = \frac{1}{nh_n} \sum_{i=1}^n k(\frac{x-X_i}{h_n})$$ where $h_n \rightarrow 0$ and $n \rightarrow \infty$ and $K$ is a suitable density function, i.e., $A_1:$ sup $\{k(x) : x \in \mathbb{R}\} \leq M$, $|x|k(x) \rightarrow 0$ as $|x| \rightarrow \infty$ \$A_2: \$ $k(x) = k(-x) \hspace{2mm} \forall x$ $\int_{-\infty}^{\infty} x^2 k(x) dx < \infty$
+Kernel type Estimator: Consider the class of estimators of the form, $$f_n(x) = \frac{1}{nh_n} \sum_{i=1}^n k(\frac{x-X_i}{h_n})$$ where $h_n \rightarrow 0$ and $n \rightarrow \infty$ and $K$ is a suitable density function, i.e., $A_1:$ sup $\{k(x) : x \in \mathbb{R}\} \leq M$, $|x|k(x) \rightarrow 0$ as $|x| \rightarrow \infty$ \$A_2: \$ $k(x) = k(-x) \hspace{2mm} \forall x$ $\int_{-\infty}^{\infty} x^2 k(x) dx < \infty$
 
 Now applying the large sample theory, Under some regularity condition, $$\frac{f_n(x) - \mathbb{E}(f_n(x))}{\sqrt{Var(f_n(x))}} \xrightarrow[]{\mathcal{D}} N(0,1)$$ as $n \rightarrow \infty$ Note: $\mathbb{E}(f_n(x)) = \frac{1}{h_n} \int_{-\infty}^{\infty} k(\frac{x-y}{h_n}) f(y) dy$ and var$(f_n(x)) \approx \frac{1}{h_n} f(x) \int_{-\infty}^{\infty} k^2(z) dz$
-
-
 
 ## Inter-play between $n$ and $h_n$
 
@@ -780,9 +775,19 @@ grid.arrange(grobs = list(p1, p2, p3), ncol = 1)
 
 #### Observations
 
-:::incremental
-- For large $n$ we need $h_n$ of very small orders to attain asymptotic normality.
-- For $n = 20$, even $h_n = n ^{-0.4}$ there are some disturbances with the peak of the histograms.
-- Where as for $n = 500$, with $h_n = n ^ {-0.2}$ we get similar results that we get with $h_n = n ^ {-0.4} for n = 20$
-- $nh_n$ determines the rate of convergence of $f_n(x) - f(x)$ to asymptotic normality.
+::: incremental
+-   For large $n$ we need $h_n$ of very small orders to attain asymptotic normality.
+-   For $n = 20$, even $h_n = n ^{-0.4}$ there are some disturbances with the peak of the histograms.
+-   Where as for $n = 500$, with $h_n = n ^ {-0.2}$ we get similar results that we get with $h_n = n ^ {-0.4} for n = 20$
+-   $nh_n$ determines the rate of convergence of $f_n(x) - f(x)$ to asymptotic normality.
 :::
+
+# Least Square Cross Validation
+
+It is a data based method for choosing $h_n$. 
+
+Let $f_{n}(x)$ be an estimator of the unknown density $f$. 
+$$f_n(x) = \frac{1}{nh_n} \sum_{i=1}^n k(\frac{x-X_i}{h_n})$$ 
+The Integrated Squared Error is defined as, ISE = $\int_{-\infty}^{\infty}(f_n(x)-f(x))^2 dx$.
+Minimising ISE w.r.t $h_n$ is equivalent to minimising $M_0(h_n)=\int_{-\infty}^{\infty}(f_n^2(x)dx-\frac{2}{n}\sum_{i=1}^{n}\hat{f}_{-i}(X_i)$ w.r.t $h_n$, where $\hat{f}_{-i}(X_i)= \frac{1}{(n-1)h_n}\sum_{j=1}^{n}k(\frac{x-X_j}{h_n})$
+Usage of the optimal $h_n$ obtained by this minimisation, would help us in checking asymptotic normality.
