@@ -1,12 +1,25 @@
 ---
 title: "Density Estimation"
-author: "Kaustav Paul Shreya Chatterjee Ananyo Dey"
+subtitle: "Histograms, Asymptotics, Crossvalidation"
+author: "Kaustav Paul 
+      <br>
+Shreya Chatterjee 
+      <br>
+      Ananyo Dey"
 institute: Indian Statistical Institute, Delhi Center
-format: beamer
+Date: "2024.04.05"
+format: 
+  revealjs: 
+    code-fold: true
+    transition: slide
+    theme: moon
+    fontsize: 180%
+execute: 
+  echo: true
 editor: visual
 ---
 
-# Introduction
+# Introduction {.scrollable}
 
 -   *Probability density function* is one of the vital and fundamental concept in statistics. Consider any random quantity $X$ that has a unique probability density function $f$. Guessing or knowing the $f$ is one of the important aspects for the statistician to infer about the population. It allows probabilities associated the $X$ to be found from the relation $$P(a < X <b) = \int_{a}^{b} f(x) dx \hspace{2mm} \text{for all} \hspace{2mm} a < b $$
 
@@ -15,6 +28,8 @@ editor: visual
 -   Here we are focusing on the non-parametric approach with less rigid assumptions will be made about the distribution of the observed data.
 
 -   Density estimation methods as we know them today began during the 1950s. However, in spirit it has been studied even via the Greeks via histograms.
+
+    \-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\--
 
 # Estimators
 
@@ -26,6 +41,8 @@ editor: visual
 
 -   \textbf{Histogram With Fixed width :} Fix a point $x_0$ and a bin width $h$ . Consider histogram on the intervals $[x_0 + mh, x_0 + (m+1)h)$ where $m = 0, \pm 1, \pm 2, \pm 3, \cdots$ . Estimators of $f(x)$ = $\frac{1}{n h} \text{No. of} \hspace{1mm} X\text{'s in the same bin as} \hspace{1mm} x$
 
+\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\--
+
 # Estimators
 
 -   To construct that histogram, we have to choose both an origin and a bin width. Note, choosing the bin width primarily inherent the amount of smoothing.
@@ -34,9 +51,9 @@ editor: visual
 
 -   Let see some examples using simulation how the sample origin, bin width and sample size effects.
 
-# Effects on Histogram
+## Effects on Histogram
 
-```{r}
+```{r,echo=FALSE,eval=TRUE,warning=FALSE}
 rm(list = ls())
 
 library(ggplot2)
@@ -90,7 +107,7 @@ hist_comp_origin2 <- function(n, origin, h, rpdf, dens, alpha, beta)
 
 ### Effect of Origin (x_0) on Histogram
 
-##### For Symmetric Distribution
+#### For Symmetric Distribution
 
 ```{r}
 norm_origin <- hist_comp_origin2(50, c(-0.3,0,0.3,0.6), 0.5, rnorm, dnorm, 0, 1)
@@ -99,18 +116,16 @@ plot_grid(title, norm_origin,ncol = 1,rel_heights = c(0.1, 1))
 
 ```
 
-# Effects on Histograms
+\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\--
 
-#### Comments:
+##### Comments:
 
 From the above figure,
 
 1.  $X_1, X_2, \cdots, X_n$ are chosen from $N(0,1)$. Assuming their density to be unknown we are trying to estimate the density using *Histogram.* Consider sample size of the Histogram $n$ as 50 and bin width of all the bin $h$ as $0.1$
 2.  Histograms show that as $x_0$ shifts **Normal** shifts accordingly.
 
-# Effects on Histogram
-
-##### For Positively Skewed Distribution
+#### For Positively Skewed Distribution
 
 ```{r}
 exp_origin <- hist_comp_origin1(50, c(-0.2,0,0.6,0.8), 0.5, rexp, dexp, 1)
@@ -119,18 +134,14 @@ plot_grid(title, exp_origin,ncol = 1,rel_heights = c(0.1, 1))
 
 ```
 
-# Effects on Histogram
-
-#### Comments:
+##### Comments:
 
 From the above figure,
 
 1.  $X_1, X_2, \cdots, X_n$ are chosen from $exponential (1)$. Assuming their density to be unknown we are trying to estimate the density using *Histogram.* Consider sample size of the Histogram $n$ as 50 and bin width of all the bin $h$ as $0.5$
 2.  Histograms show that as $x_0$ shifts **Exponential** shifts in the right side as it *non-negative* distribution and depends on the origin.
 
-# Effects on Histogram
-
-##### For Negatively Skewed Distribution 2
+#### For Negatively Skewed Distribution
 
 ```{r}
 beta_origin <- hist_comp_origin2(50, c(-0.256,0.355,0.62,0.832), 0.1, rbeta, dbeta, 5, 2)
@@ -138,18 +149,14 @@ title <- ggdraw() + draw_label("Beta(5,2) with n = 50, h = 0.1",fontface = 'bold
 plot_grid(title, beta_origin,ncol = 1,rel_heights = c(0.1, 1))
 ```
 
-# Effects on Histogram
-
-#### Comments:
+##### Comments:
 
 From the above figure,
 
 1.  $X_1, X_2, \cdots, X_n$ are chosen from $beta(5,2)$. Assuming their density to be unknown we are trying to estimate the density using *Histogram.* Consider sample size of the Histogram $n$ as 50 and bin width of all the bin $h$ as $0.1$
 2.  Histograms show that as $x_0$ shifts **Beta** shifts right side also but in low sample size the fit is pretty bad and very much depend on the origin.
 
-# Effects on Histogram
-
-##### For Bimodal Distribution
+#### For Bimodal Distribution
 
 ```{r}
 hist_mix_norms <- function(n,x0,h,m1,s1,m2,s2,p){
@@ -178,36 +185,27 @@ title <- ggdraw() + draw_label("0.3*N(-5,1)+0.7*N(4,3) with n = 50, h = 1",fontf
 plot_grid(title, normmix_origin,ncol = 1,rel_heights = c(0.1, 1))
 ```
 
-# Effects on Histogram
-
-#### Comments:
+##### Comments:
 
 From the above figure,
 
 1.  $X_1, X_2, \cdots, X_n$ are chosen from Mixture of two Normal distribution, $N(-5,1)$ and $N(4,3)$ with mixture parameter $0.3$. Assuming their density to be unknown we are trying to estimate the density using *Histogram.* Consider sample size of the Histogram $n$ as 50 and bin width of all the bin $h$ as $0.5$
 2.  Histograms show that as $x_0$ shifts **Mixture distribution** shifts accordingly and being highly effected by origin change.
 
-# Effects on Histogram
-
-##### For Discrete Distribution
+#### For Discrete Distribution
 
 ```{r,warning=FALSE}
 geo_origin <- hist_comp_origin1(500,c(5,5.3,5.5,5.7),1, rgeom, dgeom,0.3)
 title <- ggdraw() + draw_label("Geometric(0.3) with n = 500, h = 1",fontface = 'bold')
 plot_grid(title, geo_origin,ncol = 1,rel_heights = c(0.1, 1))
-
 ```
 
-# Effects on Histogram
-
-#### Comments:
+##### Comments:
 
 From the above figure,
 
 1.  $X_1, X_2, \cdots, X_n$ are chosen from Geometric$(0.3)$. Assuming their density to be unknown we are trying to estimate the density using *Histogram.* Consider sample size of the Histogram $n$ as 500 and bin width of all the bin $h$ as $1$
 2.  Histograms show that as $x_0$ shifts **Geometric distribution** shifts accordingly.
-
-# Effects on Histogram
 
 ### Effect of Fixed bin width (h) on Histogram
 
@@ -234,27 +232,22 @@ hist_comp_width2 <- function(n, x0, width, rpdf, dens, alpha, beta)
 }
 ```
 
-##### For Symmetric Distribution
+#### For Symmetric Distribution
 
 ```{r}
 norm_width <- hist_comp_width2(500, 0, c(0.3,0.5,0.7,1), rnorm, dnorm, 0, 1)
 title <- ggdraw() + draw_label("N(0,1) with n = 500, x_0 = 0",fontface = 'bold')
 plot_grid(title, norm_width,ncol = 1,rel_heights = c(0.1, 1))
-
 ```
 
-# Effects on Histogram
-
-#### Comments:
+##### Comments:
 
 From the above figure,
 
 1.  $X_1, X_2, \cdots, X_n$ are chosen from $N(0,1)$. Assuming their density to be unknown we are trying to estimate the density using *Histogram.* Consider sample size of the histogram $n$ as 500 and origin $x_0$ as 0.
 2.  Histograms show that as $h$ increases the amount of precision for **Normal** distribution decreases.
 
-# Effects on Histogram
-
-##### For Positively Skewed Distribution
+#### For Positively Skewed Distribution
 
 ```{r}
 exp_width <- hist_comp_width1(100, 0, c(0.3,0.5,0.7,1), rexp, dexp, 1)
@@ -262,18 +255,14 @@ title <- ggdraw() + draw_label("exp(1) with n = 100, x_0 = 0",fontface = 'bold')
 plot_grid(title, exp_width,ncol = 1,rel_heights = c(0.1, 1))
 ```
 
-# Effects on Histogram
-
-#### Comments:
+##### Comments:
 
 From the above figure,
 
 1.  $X_1, X_2, \cdots, X_n$ are chosen from $exponential(1)$. Assuming their density to be unknown we are trying to estimate the density using *Histogram.* Consider sample size of the histogram $n$ as 100 and origin $x_0$ as 0.
 2.  Histograms show that as $h$ increases the amount of precision for **Exponential** distribution decreases.
 
-# Effects on Histogram
-
-##### For Negatively Skewed Distribution
+#### For Negatively Skewed Distribution
 
 ```{r}
 beta_width <- hist_comp_width2(500, 0, c(0.2,0.1,0.05,0.03), rbeta, dbeta, 5, 2)
@@ -281,16 +270,14 @@ title <- ggdraw() + draw_label("Beta(5,2) with n=500, x_0 = 0",fontface = 'bold'
 plot_grid(title, beta_width,ncol = 1,rel_heights = c(0.1, 1))
 ```
 
-# Effects on Histogram
-
-#### Comments:
+##### Comments:
 
 From the above figure,
 
 1.  $X_1, X_2, \cdots, X_n$ are chosen from $beta(5,2)$. Assuming their density to be unknown we are trying to estimate the density using *Histogram.* Consider sample size of the histogram $n$ as 500 and origin $x_0$ as 0.
 2.  Histograms show that as $h$ increases the amount of precision for **Beta** distribution much decreases.
 
-# Effects on Histogram For Bi-modal Distribution
+#### For Bimodal Distribution
 
 ```{r}
 
@@ -309,8 +296,6 @@ title <- ggdraw() + draw_label("0.3*N(-5,1)+0.7*N(4,3) with n=500, x_0 = 0",font
 plot_grid(title, normmix_width,ncol = 1,rel_heights = c(0.1, 1))
 ```
 
-# Effects on Histogram
-
 #### Comments:
 
 From the above figure,
@@ -318,9 +303,7 @@ From the above figure,
 1.  $X_1, X_2, \cdots, X_n$ are chosen from Mixture of two Normal distribution, $N(-5,1)$ and $N(4,3)$ with mixture parameter $0.3$. Assuming their density to be unknown we are trying to estimate the density using *Histogram.* Consider sample size of the histogram $n$ as 500 and origin $x_0$ as 0.
 2.  Histograms show that as $h$ increases the amount of precision for **Mixture** distribution decreases.
 
-# Effects on Histogram
-
-##### For Discrete Distribution
+#### For Discrete Distribution
 
 ```{r, warning=FALSE}
 geo_width <- hist_comp_width1(100,5.5,c(0.7,1,2,3), rgeom, dgeom,0.3)
@@ -328,13 +311,9 @@ title <- ggdraw() + draw_label("Geometric(0.3) with n = 100, x_0 = 5.5",fontface
 plot_grid(title, geo_width,ncol = 1,rel_heights = c(0.1, 1))
 ```
 
-# Effects on Histogram
-
-#### Comments:
+##### Comments:
 
 1.  
-
-# Effects on Histogram
 
 ### Effect of Sample size (n) on Histogram
 
@@ -361,7 +340,7 @@ hist_comp_size2 <- function(samp, x0, h, rpdf, dens, alpha, beta)
 }
 ```
 
-##### For symmetric Distribution
+#### For symmetric Distribution
 
 ```{r}
 norm_size <- hist_comp_size2(c(50,100,500,1000), 0, 0.5, rnorm, dnorm, 0, 1)
@@ -369,59 +348,45 @@ title <- ggdraw() + draw_label("N(0,1) with x_0 = 0, h = 0.5",fontface = 'bold')
 plot_grid(title, norm_size,ncol = 1,rel_heights = c(0.1, 1))
 ```
 
-# Effects on Histogram
-
-#### Comments:
+##### Comments:
 
 From the above figure,
 
 1.  $X_1, X_2, \cdots, X_n$ are chosen from $N(0,1)$. Assuming their density to be unknown we are trying to estimate the density using *Histogram.* Considering origin $x_0$ of the Histogram as 0 and bin width of all the bin $h$ as $0.5$
 2.  Histograms show that as $n$ increases the amount of smoothing of **Normal** density increases.
 
-# Effects on Histogram
-
-##### For Positively skewed Distribution
+#### For Positively skewed Distribution
 
 ```{r}
 
 exp_size <- hist_comp_size1(c(50,100,500,1000), 0, 0.2, rexp, dexp, 1)
 title <- ggdraw() + draw_label("exp(1) with x_0 = 0, h = 0.2",fontface = 'bold')
 plot_grid(title, exp_size,ncol = 1,rel_heights = c(0.1, 1))
-
 ```
 
-# Effects on Histogram
-
-#### Comments:
+##### Comments:
 
 From the above figure,
 
 1.  $X_1, X_2, \cdots, X_n$ are chosen from $exponential(1)$. Assuming their density to be unknown we are trying to estimate the density using *Histogram.* Considering origin $x_0$ of the Histogram as 0 and bin width of all the bin $h$ as $0.2$
 2.  Histograms show that as $n$ increases the amount of smoothing of **Exponential** density increases.
 
-# Effects on Histogram
-
-##### For Negatively Skewed Distribution
+#### For Negatively Skewed Distribution
 
 ```{r}
 beta_size <- hist_comp_size2(c(50,100,500,1000), 0, 0.06, rbeta, dbeta, 5, 2)
 title <- ggdraw() + draw_label("Beta(5,2) with x_0 = 0, h = 0.06",fontface = 'bold')
 plot_grid(title, beta_size,ncol = 1,rel_heights = c(0.1, 1))
-
 ```
 
-# Effects on Histogram
-
-#### Comments:
+##### Comments:
 
 From the above figure,
 
 1.  $X_1, X_2, \cdots, X_n$ are chosen from $beta(5,2)$. Assuming their density to be unknown we are trying to estimate the density using *Histogram.* Considering origin $x_0$ of the Histogram as 0 and bin width of all the bin $h$ as $0.06$
 2.  Histograms show that as $n$ increases the amount of smoothing of **Beta** density increases.
 
-# Effects on Histogram
-
-##### For Bimodal Distribution
+#### For Bimodal Distribution
 
 ```{r}
 
@@ -440,18 +405,14 @@ title <- ggdraw() + draw_label("0.3*N(-5,1)+0.7*N(4,3) with x_0 = 0, h = 0.5",fo
 plot_grid(title, normmix_size,ncol = 1,rel_heights = c(0.1, 1))
 ```
 
-# Effects on Histogram
-
-#### Comments:
+##### Comments:
 
 From the above figure,
 
 1.  $X_1, X_2, \cdots, X_n$ are chosen from a mixture distribution of $N(-5,1)$ and $N(4,3)$ with mixture parameter $p = 0.3$. Assuming their density to be unknown we are trying to estimate the density using *Histogram.* Considering origin $x_0$ of the Histogram as 0 and bin width of all the bin $h$ as $0.5$
 2.  Histograms show that as $n$ increases the amount of smoothing of **Mixture** **Normal** density increases.
 
-# Effects on Histogram
-
-##### For Discrete Distribution
+#### For Discrete Distribution
 
 ```{r, warning=FALSE}
 
@@ -459,15 +420,179 @@ geo_size <- hist_comp_size1(c(100,200,500,1000), 5.5 ,1, rgeom, dgeom,0.3)
 title <- ggdraw() + draw_label("Geometric(0.3) with x_0 = 5.5, h = 1",fontface = 'bold')
 plot_grid(title, geo_size,ncol = 1,rel_heights = c(0.1, 1))
 
-
 ```
 
-# Effects on Histogram
-
-#### Comments:
+##### Comments:
 
 From the above figure,
 
 1.  $X_1, X_2, \cdots, X_n$ are chosen from Geometric$(0.3)$. Assuming their density to be unknown we are trying to estimate the density using *Histogram.* Considering origin $x_0$ of the Histogram as 5.5 and bin width of all the bin $h$ as $1$
 
 2.  Histograms show that as $n$ increases the amount of smoothing of **Geometric** density increases.
+
+# Estimators
+
+-   Histogram can be generalized by allowing bandwidths to vary. So here we consider the varying bandwidth. This varying bindwidth could be decided aprior or be data depended. We can estimate density by: $$\hat{f_2(x)} = \frac{1}{n} \frac{\text{No. of X's in the same bin as x}}{\text{width of the bin}}$$
+
+Lets see how it goes via simulation
+
+## Effects on Histograms
+
+```{r}
+hist4 <- function(n,h, rpdf, dens, alpha)      #if the simulating distribution has single argument
+{
+  set.seed(seed = 1)
+  x <- rpdf(n, alpha)
+  s<- seq(min(h),max(h),0.001)
+  ds <- dens(s,alpha)
+  fig <- ggplot() + geom_histogram(data = data.frame(x), aes(x = x, y = after_stat(density)),breaks=h, color="black", fill="grey")  + 
+    geom_line(data = data.frame(s, ds), aes(x = s, y = ds), color="red")
+  return (fig)
+}
+
+hist5 <- function(n, h, rpdf, dens, alpha, beta)      #if the simulating distribution has two arguments
+{
+  set.seed(seed = 1)
+  x <- rpdf(n, alpha, beta)
+  s <- seq(min(h),max(h),0.001)
+  ds <- dens(s,alpha,beta)
+  
+  fig <- ggplot() + geom_histogram(data = data.frame(x), aes(x = x, y = after_stat(density)),breaks=h, color="black", fill="grey")  + 
+    geom_line(data = data.frame(s, ds), aes(x = s, y = ds), color="red")
+  return (fig)
+}
+
+hist_mix6 <- function(n,h,m1,s1,m2,s2,p){
+  set.seed(seed=1)
+  y <- rnorm(n*p,m1,s1)
+  z <- rnorm(n*(1-p),m2,s2)
+  x <- c(y,z[z!=y])
+  s<- seq(min(h),max(h),0.1)
+  ds <- p*dnorm(s,m1,s1)+(1-p)*dnorm(s,m2,s2)
+  ggplot() + geom_histogram(data = data.frame(x), aes(x = x, y = after_stat(density)),breaks=h, binwidth=h, color="black", fill="grey")  + 
+    geom_line(data = data.frame(s, ds), aes(x = s, y = ds),color="red")
+}
+
+#For varying width (binwidth are unequal)
+hist_comp_width4 <- function(n, width, rpdf, dens, alpha)
+{
+  plots <- list()
+  for(i in (1:length(width)))
+  {
+    plots[[i]] <- hist4(n, width[[i]], rpdf, dens, alpha)+labs(title = paste(c("h = ", round(width[[i]],2)), collapse=",",sep=","))
+  }
+  grid.arrange(grobs = plots, ncol = round(length(width)/2))
+}
+
+
+hist_comp_width5 <- function(n, width, rpdf, dens, alpha, beta)
+{
+  plots <- list()
+  for(i in (1:length(width)))
+  {
+    plots[[i]] <- hist5(n, width[[i]], rpdf, dens, alpha, beta)+labs(title = paste(c("h = ", round(width[[i]],2)), collapse=",",sep=","))
+  }
+  grid.arrange(grobs = plots, ncol = round(length(width)/2))
+}
+
+hist_comp_width6 <- function(n, width, m1,s1,m2,s2,p)
+{
+  plots <- list()
+  for(i in (1:length(width)))
+  {
+    plots[[i]] <- hist_mix6(n, width[[i]], m1,s1,m2,s2,p)+labs(title = paste(c("h = ", round(width[[i]],2)), collapse=" ,",sep=","))
+  }
+  grid.arrange(grobs = plots, ncol = round(length(width)/2))
+}
+```
+
+### Effects of varying width on Histogram
+
+#### For Symmetric distribution
+
+```{r}
+v<-c()
+for(i in 3:8){
+  v <- sort(c(v, 5/sqrt(prod(3:i))))
+}
+v<- sort(c(v,-v,0))
+breaks <- list(v,v*2,v[-c(1,13)]*3,v[-c(1:2,12:13)]*8)
+norm_width <- hist_comp_width5(500, breaks, rnorm, dnorm, 0, 1)
+title <- ggdraw() + draw_label("N(0,1) with n=500, x0=0",fontface = 'bold')
+plot_grid(title, norm_width,ncol = 1,rel_heights = c(0.1, 1))
+```
+
+##### Comments:
+
+1.  
+
+#### For Positively Skewed distribution
+
+```{r}
+v<-c(0)
+for(i in 1:7){
+  v <- sort(c(v, 4/sqrt(prod(1:i))))
+}
+breaks <- list(v,v*2,v[-c(7:8)]*3,v[-c(7:8)]*4)
+exp_width <- hist_comp_width4(500, breaks, rexp, dexp, 1)
+title <- ggdraw() + draw_label("exp(1) with n = 500,x_0 = 0",fontface = 'bold')
+plot_grid(title, exp_width,ncol = 1,rel_heights = c(0.1, 1))
+```
+
+##### Comments:
+
+1.  
+
+#### For Negatively Skewed distribution
+
+```{r}
+v<- c(0.05,0.15,0.35,0.5,0.75,1.05,1.4,1.8)
+breaks <- list(v,v*1.3,v*1.2,v*0.75)
+beta_width <- hist_comp_width5(500, breaks, rbeta, dbeta, 5, 2)
+title <- ggdraw() + draw_label("Beta(5,2) with n=500, x0=0",fontface = 'bold')
+plot_grid(title, beta_width,ncol = 1,rel_heights = c(0.1, 1))
+```
+
+##### Comments:
+
+1.  
+
+#### For Bimodal distribution
+
+```{r}
+v<-c()
+for(i in 3:7){
+  v <- sort(c(v, 1/sqrt(prod(3:i))))
+}
+v<- sort(c(v,-v,0))
+breaks <- list(c(-5+8*v, 4+6*v),c(-5+6*v, 4+4*v),c(-5+12*v, 4+9*v),c(-5+10*v, 4+7*v))
+normmix_width <- hist_comp_width6(1000,breaks,-5,1,4,3,0.3)
+title <- ggdraw() + draw_label("0.3*N(-5,1)+0.7*N(4,3) with n=1000, x0=0",fontface = 'bold')
+plot_grid(title, normmix_width,ncol = 1,rel_heights = c(0.1, 1))
+```
+
+##### Comments:
+
+1.  
+
+#### For Discrete distribution
+
+```{r, warning=FALSE}
+v<- c(0.5,1.5,3,5,7.5,10.5)
+breaks <- list(v,v*2,v*0.5,v*0.75)
+geo_width <- hist_comp_width4(1000,breaks, rgeom, dgeom,0.3)
+title <- ggdraw() + draw_label("Geometric(0.3) with n = 1000, x_0 = 5.5",fontface = 'bold')
+plot_grid(title, geo_width,ncol = 1,rel_heights = c(0.1, 1))
+```
+
+##### Comments:
+
+1.  
+
+# Asymptotic Normality Checking
+
+## Background Theory
+
+-   Kernal type Estimator: Consider the class of estimators of hte form, $$f_n(x) = \frac{1}{nh_n} \sum_{i=1}^n k(\frac{x-X_i}{h_n})$$ where $h_n \rigtharrow 0$ and $n \rightarrow \infty$ and $K$ is a suitable density function, i.e., \$A_1: \$ sup {$k(x) : x \in \mathbb{R}} \leq M$, $|x| k(x) \rightarrow 0$ as $|x| \rightarrow \infty$ \$A_2: \$ $k(x) = k(-x) \hspace{2mm} \forall x$ $\int_{-\infty}^{\infty} x^2 k(x) dx < \infty$
+
+Now applying the large sample theory, Under some regularity condition, $$\frac{f_n(x) - \mathbb{E}(f_n(x))}{\sqrt{Var(f_n(x))}} \xrightarrow[]{\mathcal{D}} N(0,1)$$ as $n \rightarrow \infty$ Note: \$\mathbb{E}(f_n(x)) = \frac{1}{n} \int\_{-\infty}\^{\infty}k(\frac{x-y}{h_n}) f(y) dy \$ and var($f_n(x)) \approx \frac{1}{h_n} f(x) \int_{-\infty}^{\infty} k^2(z) dz$
