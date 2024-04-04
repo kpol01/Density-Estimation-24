@@ -1,15 +1,292 @@
+# Kernel Density Estimation & its Asymptotics
+
+## Background Theory
+
+Kernel type Estimator: Consider the class of estimators of the form, $$f_n(x) = \frac{1}{nh_n} \sum_{i=1}^n k(\frac{x-X_i}{h_n})$$ where $h_n \rightarrow 0$ and $n \rightarrow \infty$ and $K$ is a suitable density function, i.e., $A_1:$ sup $\{k(x) : x \in \mathbb{R}\} \leq M$, $|x|k(x) \rightarrow 0$ as $|x| \rightarrow \infty$ and $A_2:$$k(x) = k(-x) \hspace{2mm} \forall x$ $\int_{-\infty}^{\infty} x^2 k(x) dx < \infty$
+
+Now applying the large sample theory, Under some regularity condition, $$\frac{f_n(x) - \mathbb{E}(f_n(x))}{\sqrt{Var(f_n(x))}} \xrightarrow[]{\mathcal{D}} N(0,1)$$ as $n \rightarrow \infty$ Note: $\mathbb{E}(f_n(x)) = \frac{1}{h_n} \int_{-\infty}^{\infty} k(\frac{x-y}{h_n}) f(y) dy$ and var$(f_n(x)) \approx \frac{1}{h_n} f(x) \int_{-\infty}^{\infty} k^2(z) dz$
+
+## Background Theory
+
+Moreover if we assume that 
+- $K(x)$ is a symmetric bounded density function & 
+- $\int_{-\infty}^{\infty} y^2 K(y) d(y) = 1$
+
+then we can approximate the asymptotic mean and variance of $f_n(x)$ as follows;
+
+```{=tex}
+\begin{align}
+  \mathbb{E}[f_ n(x)] &\approx f(x) + \frac{1}{2}f^{(2)}(x)h^2_n \\
+  Var[f_n(x)] &\approx \frac{1}{nh_n} f(x) \int_{-\infty}^{\infty} K^2(y) dy 
+  
+\end{align}
+```
+**Note:** The asymptotic convergence mentioned earlier is point wise not uniform with respect to $x$.
+
+## Examples
+
+Sample from Normal(0,1) with bandwidth $h_n = n^{(-0.2)}$
+ 
+We have simulated 1000 values of estimated density using *Gaussian Kernel* taking $x$ as the 60th percentile, standardized them and obtained the following histogram.
+
+```{r, echo = F, include = F}
+library(ggplot2)
+library(gridExtra)
+
+# Define the kernel functions
+gaussian_kernel <- function(u) dnorm(u)
+logistic_kernel <- function(u) dlogis(u)
+naive_kernel <- function(u) ifelse(abs(u) <= 1, 0.5, 0)
+tricube_kernel <- function(u) ifelse(abs(u) <= 1, 35/32 * (1 - abs(u)^3)^3, 0)
+cosine_kernel <- function(u) ifelse(abs(u) <= 1, pi/4 * cos(pi/2 * u), 0)
+epanechnikov_kernel <- function(u) ifelse(abs(u) <= 1, 3/4 * (1 - u^2), 0)
+
+# Set the values for n and calculate h_n for each
+n_values <- c(20, 70, 250, 500)
+
+n<-5000
+h_values <- n_values ^ (-0.3)
+
+
+# Function to simulate and plot for a given kernel
+
+simulate_and_plot <- function(kernel_func, kernel_name, quantile) {
+  
+  
+  p <- list()
+  for (i in (1:length(n_values))) {
+    n <- n_values[i]
+    h <- h_values[i]
+    
+    # Generate random samples
+    
+    
+    # Compute the 0.1 quantile of the sample
+    x_q <- qnorm(quantile, 0, 1)
+    
+    # For each sample, estimate the density at x_q using the kernel function
+    f_n_x <- replicate(1000, {
+      sample_x_i <- rnorm(n,0,1)          # New sample for each replication
+      mean(kernel_func((x_q - sample_x_i) / h)) / h
+    })
+    
+    
+    df<-D(D(expression(1/sqrt(2*pi)*exp(-0.5*x^2)),"x"),"x")
+    mode(df)
+    x<-x_q
+    E_f_n_x <- dnorm(x_q,0,1)+ (0.5 * h^2 * eval(df))
+    kernel_int <- integrate(function(u) kernel_func(u)^2, lower = -Inf, upper = Inf)$value
+    var_f_n_x <- (1 / (n * h)) * dnorm(x_q,0,1) * kernel_int
+    
+    # Standardize f_n(x)
+    standardized_f_n_x <- (f_n_x-E_f_n_x)/sqrt( var_f_n_x)
+    
+    # Create a dataframe for plotting
+    data_to_plot <- data.frame(standardized_f_n_x = standardized_f_n_x)
+    
+    # Plot the histogram with the density of N(0,1) overlaid
+    
+    
+    p[[i]] <- ggplot(data_to_plot, aes(x = standardized_f_n_x)) +
+      geom_histogram(aes(y = ..density..), bins = 30, color = "black", fill = "skyblue") +
+      stat_function(fun = dnorm, args = list(mean = 0, sd = 1), color = "red", size = 1) +
+      labs(title = paste("| n =", n, "| h_n =", round(h, 3)),
+           x = "Standardized f_n(x_q)", y = "Density")
+    
+  }
+  return(p)
+}
+
+
+
+```
+
+```{r, echo = F, cap.height = 5}
+p <- grid.arrange(grobs = simulate_and_plot(gaussian_kernel, "Gaussian", 0.6), nrow = 2)
+```
+
+## Checking point-wise Convergence
+
+#### Points to be noted
+
+
+:::incremental
+- The asymptotic convergence does not hold uniformly but in a point-wise sense.
+- The rate of convergence may vary with the chosen $x$ where we want to estimate the density.
+- Usually the cluster of points at the tail-end of the distribution is much less, so estimating density at the tail end points may not yield satisfactory
+:::
+
+## Checking point-wise Convergence{.scrollable}
+
+Samples from N(0,1), with *Gaussian kernel*, taking $h_n = n^{-0.2}$, we have considered the quantiles 0.5, 0.65, 0.8, 0.9
+
+```{r, echo = F, include = F}
+library(ggplot2)
+library(gridExtra)
+# Define the kernel functions
+gaussian_kernel <- function(u) dnorm(u)
+logistic_kernel <- function(u) dlogis(u)
+naive_kernel <- function(u) ifelse(abs(u) <= 1, 0.5, 0)
+tricube_kernel <- function(u) ifelse(abs(u) <= 1, 35/32 * (1 - abs(u)^3)^3, 0)
+cosine_kernel <- function(u) ifelse(abs(u) <= 1, pi/4 * cos(pi/2 * u), 0)
+epanechnikov_kernel <- function(u) ifelse(abs(u) <= 1, 3/4 * (1 - u^2), 0)
+
+# Set the values for n and calculate h_n for each
+n_values <- c(20, 100, 250, 500)
+
+
+h_values <- n_values^(-0.2)
+
+
+# Function to simulate and plot for a given kernel
+
+simulate_and_plot <- function(kernel_func, kernel_name, quantile) {
+  p <- list()
+  for (i in (1:length(n_values))) {
+    n <- n_values[i]
+    h <- h_values[i]
+    
+    # Generate random samples
+  
+    
+    # Compute the 0.1 quantile of the sample
+    x_q <- qnorm(quantile, 0, 1)
+    
+    # For each sample, estimate the density at x_q using the kernel function
+    f_n_x <- replicate(1000, {
+      sample_x_i <- rnorm(n,0,1)          # New sample for each replication
+      mean(kernel_func((x_q - sample_x_i) / h)) / h
+    })
+    
+    
+    df<-D(D(expression(1/sqrt(2*pi)*exp(-0.5*x^2)),"x"),"x")
+    mode(df)
+    x<-x_q
+    E_f_n_x <- dnorm(x_q,0,1)+ (0.5 * h^2 * eval(df))
+    kernel_int <- integrate(function(u) kernel_func(u)^2, lower = -Inf, upper = Inf)$value
+    var_f_n_x <- (1 / (n * h)) * dnorm(x_q,0,1) * kernel_int
+    
+    # Standardize f_n(x)
+    standardized_f_n_x <- (f_n_x-E_f_n_x)/sqrt( var_f_n_x)
+    
+    # Create a dataframe for plotting
+    data_to_plot <- data.frame(standardized_f_n_x = standardized_f_n_x)
+    
+    # Plot the histogram with the density of N(0,1) overlaid
+    
+    
+    p[[i]] <- ggplot(data_to_plot, aes(x = standardized_f_n_x)) +
+      geom_histogram(aes(y = ..density..), bins = 30, color = "black", fill = "skyblue") +
+      stat_function(fun = dnorm, args = list(mean = 0, sd = 1), color = "red", size = 1) +
+      labs(title = paste("Quantile=", 0.5 + (0.9-quantile), "|n =", n),
+           x = "Standardized f_n(x_q)", y = "Density")
+  
+  }
+  return(p)
+}
+
+p1 <- grid.arrange(grobs = simulate_and_plot(gaussian_kernel, "Gaussian", 0.9), nrow =1)
+p2 <- grid.arrange(grobs = simulate_and_plot(gaussian_kernel, "Gaussian", 0.75), nrow = 1)
+p3 <- grid.arrange(grobs = simulate_and_plot(gaussian_kernel, "Gaussian", 0.6), nrow = 1)
+p4 <- grid.arrange(grobs = simulate_and_plot(gaussian_kernel, "Gaussian", 0.5), nrow = 1)
+ 
+```
+
+```{r, echo = F, fig.height=5}
+grid.arrange(grobs = list(p1, p2, p3, p4), ncol = 1)
+```
+
+## Checking point-wise Convergence{.scrollable}
+
+Samples from Exponential(1), with *Epanechnikov kernel*, taking $h_n = n^{-0.2}$, we have considered the quantiles 0.5, 0.65, 0.8, 0.9
+
+```{r, echo = F, include = F}
+n_values <- c(100, 250, 500, 750)
+
+
+h_values <- n_values^(-0.2)
+simulate_and_plot <- function(kernel_func, kernel_name, quantile) {
+  p <- list()
+  for (i in (1:length(n_values))) {
+    n <- n_values[i]
+    h <- h_values[i]
+    
+    # Generate random samples
+  
+    
+    # Compute the 0.1 quantile of the sample
+    x_q <- qexp(quantile)
+    
+    # For each sample, estimate the density at x_q using the kernel function
+    f_n_x <- replicate(1000, {
+      sample_x_i <- rexp(n)          # New sample for each replication
+      mean(kernel_func((x_q - sample_x_i) / h)) / h
+    })
+    
+    
+    df<-D(D(expression(exp(-x)),"x"),"x")
+    mode(df)
+    x<-x_q
+    E_f_n_x <- dexp(x_q)+ (0.5 * h^2 * eval(df))
+    kernel_int <- integrate(function(u) kernel_func(u)^2, lower = -Inf, upper = Inf)$value
+    var_f_n_x <- (1 / (n * h)) * dexp(x_q) * kernel_int
+    
+    # Standardize f_n(x)
+    standardized_f_n_x <- (f_n_x-E_f_n_x)/sqrt( var_f_n_x)
+    
+    # Create a dataframe for plotting
+    data_to_plot <- data.frame(standardized_f_n_x = standardized_f_n_x)
+    
+    # Plot the histogram with the density of N(0,1) overlaid
+    
+    
+    p[[i]] <- ggplot(data_to_plot, aes(x = standardized_f_n_x)) +
+      geom_histogram(aes(y = ..density..), bins = 30, color = "black", fill = "skyblue") +
+      stat_function(fun = dnorm, args = list(mean = 0, sd = 1), color = "red", size = 1) +
+      labs(title = paste("Quantile=", 0.5 + (0.9-quantile), "|n =", n),
+           x = "Standardized f_n(x_q)", y = "Density")
+  
+  }
+  return(p)
+}
+
+p1 <- grid.arrange(grobs = simulate_and_plot(epanechnikov_kernel, "Epanechnikov", 0.9), nrow =1)
+p2 <- grid.arrange(grobs = simulate_and_plot(epanechnikov_kernel, "Epanechnikov", 0.75), nrow = 1)
+p3 <- grid.arrange(grobs = simulate_and_plot(epanechnikov_kernel, "Epanechnikov", 0.6), nrow = 1)
+p4 <- grid.arrange(grobs = simulate_and_plot(epanechnikov_kernel, "Epanechnikov", 0.5), nrow = 1)
+
+```
+
+```{r, echo = F, fig.height=5}
+grid.arrange(grobs = list(p1, p2, p3, p4), ncol = 1)
+```
+
+
+
+
+## Checking point-wise Convergence
+#### Observations from the histograms
+
+::: incremental
+- As $n$ increases the shape of the histograms tend coincide with the density of $N(0,1)$.
+- However the rate of convergence to Normal is faster for the moderate quantiles.
+- As we try to estimate the densities at the tail end, we are not getting as fast convergence as in the moderate quantiles.
+- For Exponential case there is a shift of the histograms to the left even at $n = 750$
+:::
+
+
 
 ## Inter-play between $n$ and $h_n$
 
 #### Points to be noted
 
 ::: incremental
--   With decrease in $h_n$ results are expected to more precise.
--   The asymptotic variance of $f_n(x)$ is of order $nh_n$, hence $nh_n$ is the right scaling factor for $(f_n(x) - f(x))$.
+-   With decrease in $h_n$ the variation in the estimated density increases.
+-   The asymptotic variance of $f_n(x)$ is of order $\frac{1}{nh_n}$, hence $nh_n$ is the right scaling factor for $(f_n(x) - f(x))$.
 -   For asymptotic results to hold we need $h_n \rightarrow 0$ and $nh_n \rightarrow \infty$
 -   To achieve normality we not only need $n$ to be large but $nh_n$ to be large as well.
 -   So depending on the choice of $n$ we need to choose $h_n$. Hence $h_n$ also plays a role in the asymptotic behaviour of $f_n(x)$.
--   To be precise, if we have a small $n$ $h_n$ needs to be of smaller order than $h_n$ required for larger $n$ to attain asymptotic normality.
+
 :::
 
 ## Inter-play between $n$ and $h_n$ {.scrollable}
@@ -79,7 +356,7 @@ simulate_and_plot <- function(kernel_func, kernel_name, quantile, n) {
     p[[i]] <- ggplot(data_to_plot, aes(x = standardized_f_n_x)) +
       geom_histogram(aes(y = ..density..), bins = 30, color = "black", fill = "skyblue") +
       stat_function(fun = dnorm, args = list(mean = 0, sd = 1), color = "red", size = 1) +
-      labs(title = paste("| n =", n, "| h_n =", round(h, 3)),
+      labs(title = paste("n =", n, "| log (h_n) =", log(h)/log(n)),
            x = "Standardized f_n(x_q)", y = "Density")
     
   }
@@ -103,10 +380,9 @@ grid.arrange(grobs = list(p1, p2, p3), ncol = 1)
 
 #### Observations
 
-:::incremental
-- For large $n$ we need $h_n$ of very small orders to attain asymptotic normality.
-- For $n = 20$, even $h_n = n ^{-0.4}$ there are some disturbances with the peak of the histograms.
-- Where as for $n = 500$, with $h_n = n ^ {-0.2}$ we get similar results that we get with $h_n = n ^ {-0.4} for n = 20$
-- $nh_n$ determines the rate of convergence of $f_n(x) - f(x)$ to asymptotic noormality.
+::: incremental
+-   For large $n$ asymptotic normality is being attained at relative large order of $h_n$.
+-   For $n = 20$, even $h_n = n ^{-0.4}$ there are some disturbances with the peak of the histograms.
+-   Where as for $n = 500$, with $h_n = n ^ {-0.2}$ we get similar results that we get with $h_n = n ^ {-0.4} for n = 20$
+-   $nh_n$ determines the rate of convergence of $f_n(x) - f(x)$ to asymptotic normality.
 :::
-
