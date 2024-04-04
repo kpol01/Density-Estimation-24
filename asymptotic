@@ -282,7 +282,7 @@ grid.arrange(grobs = list(p1, p2, p3, p4), ncol = 1)
 
 ::: incremental
 -   With decrease in $h_n$ the variation in the estimated density increases.
--   The asymptotic variance of $f_n(x)$ is of order $\frac{1}{nh_n}$, hence $nh_n$ is the right scaling factor for $(f_n(x) - f(x))$.
+-   The asymptotic variance of $f_n(x)$ is of order $\frac{1}{nh_n}$, hence $\sqrt{nh_n}$ is the right scaling factor for $(f_n(x) - f(x))$.
 -   For asymptotic results to hold we need $h_n \rightarrow 0$ and $nh_n \rightarrow \infty$
 -   To achieve normality we not only need $n$ to be large but $nh_n$ to be large as well.
 -   So depending on the choice of $n$ we need to choose $h_n$. Hence $h_n$ also plays a role in the asymptotic behaviour of $f_n(x)$.
